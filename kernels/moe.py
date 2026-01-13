@@ -626,6 +626,7 @@ def fused_experts_impl(
     block_shape: list[int] | None = None,
     w1_bias: torch.Tensor | None = None,
     w2_bias: torch.Tensor | None = None,
+    config: dict | None = None,
 ) -> torch.Tensor:
     if use_int4_w4a16:
         assert hidden_states.size(1) // 2 == w1.size(2), "Hidden size mismatch"
@@ -684,16 +685,17 @@ def fused_experts_impl(
         ocp_mx_scheme=ocp_mx_scheme,
     )
 
-    get_config_func = functools.partial(
-        try_get_optimal_moe_config,
-        w1.size(),
-        w2.size(),
-        top_k_num,
-        config_dtype,
-        block_shape=block_shape,
-    )
-
-    config = get_config_func(M)
+    if config == None:
+        get_config_func = functools.partial(
+            try_get_optimal_moe_config,
+            w1.size(),
+            w2.size(),
+            top_k_num,
+            config_dtype,
+            block_shape=block_shape,
+        )
+        config = get_config_func(M)
+        #print(f"=====Use vllm default config for {hidden_states.shape}:{config}")
 
     # We can reuse the memory between these because by the time we need
     # cache3, we're done with cache1
@@ -780,7 +782,7 @@ def fused_experts_impl(
                 : tokens_in_chunk * topk_ids.size(1)
             ]
             intermediate_cache3 = intermediate_cache3[:tokens_in_chunk]
-            config = get_config_func(tokens_in_chunk)
+            #config = get_config_func(tokens_in_chunk)
 
         curr_topk_ids = topk_ids[begin_chunk_idx:end_chunk_idx]
         curr_topk_weights = topk_weights[begin_chunk_idx:end_chunk_idx]
@@ -814,7 +816,7 @@ def fused_experts_impl(
             num_tokens_post_padded,
             apply_router_weight_on_input,
             top_k_num,
-            config, #vllm_small_moe_config,
+            config,
             compute_type=compute_type,
             use_fp8_w8a8=use_fp8_w8a8,
             use_int8_w8a8=use_int8_w8a8,
@@ -904,6 +906,7 @@ def fused_experts(
     expert_map: torch.Tensor | None = None,
     quant_config: FusedMoEQuantConfig | None = None,
     allow_deep_gemm: bool = False,
+    config: dict| None = None,
 ) -> torch.Tensor:
     if quant_config is None:
         quant_config = FUSED_MOE_UNQUANTIZED_CONFIG
@@ -933,6 +936,7 @@ def fused_experts(
         block_shape=quant_config.block_shape,
         w1_bias=quant_config.w1_bias,
         w2_bias=quant_config.w2_bias,
+        config=config,
     )
 
 def fused_topk(
