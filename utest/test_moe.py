@@ -96,8 +96,8 @@ def hip_autotune_config(dtype, method):
             "BLOCK_SIZE_K2": K_size,
             "num_warps": waves_size,
             "num_stages": num_stages,
-            "matrix_instr_nonkdim_range": matrix_instr_nonkdim_range,
-            "kpack_range": kpack_range,
+            "matrix_instr_nonkdim": matrix_instr_nonkdim_range,
+            "kpack": kpack_range,
         }
     elif "aiter" in method:
         tune_dict = {
@@ -108,8 +108,8 @@ def hip_autotune_config(dtype, method):
             "GROUP_SIZE_M": group_size, #Group size for L2 cache optimization.
             "num_warps": waves_size,
             "num_stages": num_stages,
-            "matrix_instr_nonkdim_range": matrix_instr_nonkdim_range,
-            "kpack_range": kpack_range,
+            "matrix_instr_nonkdim": matrix_instr_nonkdim_range,
+            "kpack": kpack_range,
         }
     else:
         tune_dict = {
@@ -119,8 +119,8 @@ def hip_autotune_config(dtype, method):
             "GROUP_SIZE_M": group_size, #Group size for L2 cache optimization.
             "num_warps": waves_size,
             "num_stages": num_stages,
-            "matrix_instr_nonkdim_range": matrix_instr_nonkdim_range,
-            "kpack_range": kpack_range,
+            "matrix_instr_nonkdim": matrix_instr_nonkdim_range,
+            "kpack": kpack_range,
         }
 
     tune_config = []
