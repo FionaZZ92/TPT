@@ -60,3 +60,14 @@ moe-benchmark:
 3       4096.0  2.620887  2.241407  1.286483
 4       8192.0  5.007975  3.500651  2.507687
 ```
+
+## IR pass optimization tool:
+While you run utest with `--cache` option, you will get trtion cache with selected method kernel. Put the ttir/ttgir/mlir as input for triton compiler pass manager optimization, then you will get new IR file. Compare differences between original and new IR to find out regular compiler optimization functionalities. For example:
+```bash
+root@hjbog-srdc-52:/app/users/fizhao/triton_lib/common# python3 compiler_pass.py -s ../utest/aiter_persistent_cache/CPX2JAPODDRSV2O46PZMO2VDHFXUHPLXWIENX3EK2C7O33E7OMUA/e2e_moe_persistent_kernel.ttir
+===Applying Pass...
+===Executing Pass optimization...
+[DONE]Generate TTIR successfully.
+[DONE] TTIR saved in: new.ttir
+root@hjbog-srdc-52:/app/users/fizhao/triton_lib/common# diff ../utest/aiter_persistent_cache/CPX2JAPODDRSV2O46PZMO2VDHFXUHPLXWIENX3EK2C7O33E7OMUA/e2e_moe_persistent_kernel.ttir new.ttir
+``` 
