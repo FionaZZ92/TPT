@@ -134,7 +134,7 @@ def hip_autotune_config(dtype, method):
     return tune_config
 
 def check_best_config(method):
-    config_file_path = f"moe_{args.method}_best_config.json"
+    config_file_path = f"moe_{method}_best_config.json"
     if os.path.exists(config_file_path):
         with open(config_file_path) as f:
             print(f"=====Using configuration from {config_file_path} for MoE layer.")
@@ -231,7 +231,10 @@ def runner_test(input_token, method, inter_dim, hidden_size, experts, topk, dtyp
         from aiter.ops.triton.moe_op_e2e import moe_set_use_persistent_kernel as triton_e2e_moe_set_use_persistent_kernel
         if method == "aiter_persistent":
             if usebest:
-                config = check_best_config(method)
+                tuned_config = check_best_config(method)
+                if tuned_config is not None and str(input_token) in tuned_config:
+                    config = tuned_config[str(input_token)]
+                    print(f"Use config of input_tokn {input_token}")
             if config == None: #non autotune mode
                 config = aiter_p_small_moe_config
             config_m_block = config['BLOCK_SIZE_M']

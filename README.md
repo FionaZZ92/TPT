@@ -71,3 +71,21 @@ root@hjbog-srdc-52:/app/users/fizhao/triton_lib/common# python3 compiler_pass.py
 [DONE] TTIR saved in: new.ttir
 root@hjbog-srdc-52:/app/users/fizhao/triton_lib/common# diff ../utest/aiter_persistent_cache/CPX2JAPODDRSV2O46PZMO2VDHFXUHPLXWIENX3EK2C7O33E7OMUA/e2e_moe_persistent_kernel.ttir new.ttir
 ``` 
+
+## auto tune example
+
+```bash
+python3 test_moe.py --method aiter_persistent --mode autotune --input_token 1024
+```
+
+After tune the `aiter_persistent`
+
+```bash
+moe-benchmark:
+   input_token   Aiter_p     Aiter      VLLM
+0          1.0  0.074580  0.084640  0.232161
+1       1024.0  0.661602  0.782982  0.410642
+2       2048.0  1.282384  1.373924  0.691702
+3       4096.0  2.429887  2.212227  1.283644
+4       8192.0  4.307934  3.515332  2.501889
+```
