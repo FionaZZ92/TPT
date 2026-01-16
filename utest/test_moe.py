@@ -232,7 +232,7 @@ def runner_test(input_token, method, inter_dim, hidden_size, experts, topk, dtyp
         if method == "aiter_persistent":
             if usebest:
                 tuned_config = check_best_config(method)
-                if str(input_token) in tuned_config:
+                if tuned_config is not None and str(input_token) in tuned_config:
                     config = tuned_config[str(input_token)]
                     print(f"Use config of input_tokn {input_token}")
             if config == None: #non autotune mode
