@@ -74,19 +74,11 @@ vllm_small_moe_config = {
 tune_config = []
 
 def hip_autotune_config(dtype, method):
-    #MN_size = [16,32,64,128,256]
-    MN_size = [16,32,64,128]
-    N1_size = [16,32,64,128]
-    N2_size = [16,32,64,128]
-    #K_size = [32,64,128]
-    K_size = [32,64]
-    K1_size = [32,64]
-    K2_size = [32,64]
-    #group_size = [1,2,4,6,8]
-    group_size = [1,2,4,6]
+    MN_size = [16,32,64,128,256]
+    K_size = [32,64,128]
+    group_size = [1,2,4,6,8]
     waves_size = [1,2,4]
-    # num_stages = [2,3,4,5]
-    num_stages = [2,3,4]
+    num_stages = [2,3,4,5]
     '''MN_size = [16,32,64,128,256]
     K_size = [64]
     group_size = [4]
@@ -98,10 +90,10 @@ def hip_autotune_config(dtype, method):
     if "aiter_persistent" in method:
         tune_dict = {
             "BLOCK_SIZE_M": MN_size,
-            "BLOCK_SIZE_N1": N1_size,
-            "BLOCK_SIZE_N2": N2_size,
-            "BLOCK_SIZE_K1": K1_size,
-            "BLOCK_SIZE_K2": K2_size,
+            "BLOCK_SIZE_N1": MN_size,
+            "BLOCK_SIZE_N2": MN_size,
+            "BLOCK_SIZE_K1": K_size,
+            "BLOCK_SIZE_K2": K_size,
             "num_warps": waves_size,
             "num_stages": num_stages,
             "matrix_instr_nonkdim": matrix_instr_nonkdim_range,
@@ -239,10 +231,10 @@ def runner_test(input_token, method, inter_dim, hidden_size, experts, topk, dtyp
         from aiter.ops.triton.moe_op_e2e import moe_set_use_persistent_kernel as triton_e2e_moe_set_use_persistent_kernel
         if method == "aiter_persistent":
             if usebest:
-                tuned_config = check_best_config("aiter_persistent")
+                tuned_config = check_best_config(method)
                 if str(input_token) in tuned_config:
                     config = tuned_config[str(input_token)]
-                    print(f"======================put config of {input_token}")
+                    print(f"Use config of input_tokn {input_token}")
             if config == None: #non autotune mode
                 config = aiter_p_small_moe_config
             config_m_block = config['BLOCK_SIZE_M']
@@ -279,7 +271,7 @@ def runner_test(input_token, method, inter_dim, hidden_size, experts, topk, dtyp
             )
         elif method == "aiter":
             if usebest:
-                config = check_best_config("aiter")
+                config = check_best_config(method)
             if config == None: #non autotune mode
                 if input_token >=1024:
                     config = aiter_large_moe_config
