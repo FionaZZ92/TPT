@@ -54,11 +54,11 @@ INFO:aiter:merge tuned file under model_configs/ and configs/ /opt/aiter/aiter/c
 Using default MoE config. Performance might be sub-optimal! Config file not found at %s /opt/vllm/vllm/model_executor/layers/fused_moe/configs/E=128,N=96,device_name=AMD_Instinct_MI308X.json, /app/users/fizhao/triton_lib/kernels/configs/E=128,N=96,device_name=AMD_Instinct_MI308X.json
 moe-benchmark:
    input_token   Aiter_p     Aiter      VLLM
-0          1.0  0.114581  0.085240  0.234800
-1       1024.0  0.845562  0.765422  0.399201
-2       2048.0  1.405484  1.358244  0.687122
-3       4096.0  2.620887  2.241407  1.286483
-4       8192.0  5.007975  3.500651  2.507687
+0          1.0  0.114581  0.085240  0.179620
+1       1024.0  0.845562  0.765422  0.309681
+2       2048.0  1.405484  1.358244  0.472121
+3       4096.0  2.620887  2.241407  0.873123
+4       8192.0  5.007975  3.500651  1.639085
 ```
 
 ## IR pass optimization tool:
@@ -116,9 +116,9 @@ After tune the `aiter_persistent`
 ```bash
 moe-benchmark:
    input_token   Aiter_p     Aiter      VLLM
-0          1.0  0.074580  0.084640  0.232161
-1       1024.0  0.661602  0.782982  0.410642
-2       2048.0  1.282384  1.373924  0.691702
-3       4096.0  2.429887  2.212227  1.283644
-4       8192.0  4.307934  3.515332  2.501889
+0          1.0  0.074580  0.084640  0.179121
+1       1024.0  0.661602  0.782982  0.309861
+2       2048.0  1.282384  1.373924  0.474962
+3       4096.0  2.429887  2.212227  0.870203
+4       8192.0  4.307934  3.515332  1.639085
 ```

@@ -558,6 +558,7 @@ def get_default_config(
             "BLOCK_SIZE_K": 64,
             "GROUP_SIZE_M": 1,
             "SPLIT_K": 1,
+
         }
     else:
         config = {
@@ -566,6 +567,11 @@ def get_default_config(
             "BLOCK_SIZE_K": 32,
             "GROUP_SIZE_M": 8,
             "SPLIT_K": 1,
+            'num_warps': 2,
+            'num_stages': 2,
+            'waves_per_eu': 2,
+            'matrix_instr_nonkdim': 16,
+            'kpack': 1,
         }
     return config
 
